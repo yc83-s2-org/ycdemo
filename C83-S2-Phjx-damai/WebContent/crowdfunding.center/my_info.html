@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="revised" content="Ningxia Seasons, 2015/8/13/" />
+<!-- 定义页面的最新版本 -->
+<meta name="description" content="网站简介" />
+<!-- 网站简介 -->
+<meta name="keywords" content="搜索关键字，以半角英文逗号隔开" />
+<!-- 搜索关键字 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大麦商城 - 个人中心</title>
+
+<link href="../css/crowdfunding.center/my_info.css" rel="stylesheet">
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/vue.min.js"></script>
+<script type="text/javascript" src="../js/ajax.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+
+
+</head>
+<body>
+<!-- 开始 -->
+<div class="my_info_title">我的资料</div>
+  
+  
+<div class="my_info_title_3">
+  <ul>
+    <li id="listClick_1" onClick="listClick(1)" style="border-bottom: 1px solid #C40521; color: #C40521;">基本资料</li>
+    <li id="listClick_4" onClick="listClick(4)">修改密码</li>
+  </ul>
+</div>
+<div class="my_info_content" id="us">
+  <div class="my_info_content_care"> </div>
+  <table class="my_info_content_care_table">
+    <tbody>
+      <tr>
+        <td width="90" align="right" class="color555">用户名：</td>
+        <td class="color555"><input v-model="users.ename"  name="ename" type="text"   style="width:350px" /><span class="colorCA1E37 margin_left10 font_size12"></span></td>
+      </tr>
+      <tr>
+        <td align="right" class="color555">手机号码：</td>
+        <td class="color555"><input v-model="users.phone" name="phone" type="text"  style="width:350px" /><span class="color959595 margin_left10 font_size12"></span></td>
+      </tr>
+      <tr>
+        <td align="right" class="color555">真实姓名：</td>
+        <td class="color555"><input v-model="users.cname" name="cname" type="text"   style="width:350px" />
+          <span class="color959595 margin_left10 font_size12"></span></td>
+      </tr>
+      <tr>
+        <td align="right" class="color555">性别：</td>
+        <td class="color555">
+          <label>
+            <input v-model="users.sex" type="radio" name="sex" id="1" value="男">
+            男士 </label>
+          <label class="radio-inline">
+            <input v-model="users.sex" type="radio" name="sex" id="1" value="女">
+            女士 </label></td>
+      </tr>
+      <tr>
+        <td align="right" class="color555">邮箱：</td>
+        <td class="color555"><input v-model="users.email" name="email" type="email"   style="width:350px" />
+          <span class="color959595 margin_left10 font_size12"></span></td>
+      </tr>
+      
+      <tr>
+        <td align="right" class="color555">&nbsp;</td>
+        <td class="color555"><span class="color959595 margin_left10 font_size12"></span></td>
+      </tr>
+      <tr>
+        <td align="right" class="color555">&nbsp;</td>
+        <td class="color555"><span class="color959595 margin_left10 font_size12"></span></td>
+      </tr>
+
+      
+    </tbody>
+  </table>
+</div>
+<script type="text/javascript">
+  var vue1=new Vue({
+	el:"#us",
+	data : {
+		users:{},
+		ename:"",		
+		email:"",
+		phone:"",
+		cname:"",
+		sex:"男"
+	},
+	created : function(){
+		// axios ...
+		axios.get("../user.do?op=queryByUser").then(res=>{
+			this.users = res.data.users;
+		
+		});
+	},
+	methods:{
+		
+		save(){
+			var url="../user.do?op=save";
+			var user={
+					ename:this.ename,//前面是请求参数名，后面是vue变量值					
+					email:this.email,
+					phone:this.phone,
+					cname:this.cname,
+		    		sex:this.sex,	
+			};//json格式
+			$.post(url,user,function(msg){
+				alert(msg);
+				
+			});
+		}
+	}
+});
+
+</script>
+
+<!-- 结束 --> 
+<script src="../js/jquery-2.1.1.min.js"></script>  
+<script src="../js/my_info.js"></script>
+<script src="../js/jquery.cityselect.js"></script> 
+<script type="text/javascript">
+// JavaScript Document
+$(document).ready(function(){
+	$("#my_city").citySelect({
+		prov:"北京",
+		nodata:"none"
+	});
+});
+</script>
+</body>
+</html>

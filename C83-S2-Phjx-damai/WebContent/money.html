@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>支付页面</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/axios.min.js"></script>
+<style>
+		body{
+		    text-align: center;
+			border:2px solid #000;
+			margin: auto;
+			width:300px;
+			height:370px;
+			position:relative;
+		
+		}
+	</style>
+</head>
+<body >
+<div class="orderList">
+<h4>待支付:{{orders.total}}元</h4>
+<img src="images/二维码.jpg"  alt="">
+
+
+<div style="width:300px;height:40px;text-align:center;">
+<a href="sucess.html"><button type="button" autofocus="autofocus"  style="float:left">支付成功</button></a>
+<a href="pay.html"><button type="button" autofocus="autofocus" style="float:right">取消</button></a>
+</div>
+
+
+</div>
+
+<script type="text/javascript">
+			var vue=new Vue({
+				el:".orderList",
+				data : {
+					orders : {}, // 查询的分类商品
+					
+				},
+				created : function(){
+					// axios ...
+					axios.get("orders.do?op=query").then(res=>{
+						this.orders = res.data.orders;
+						
+					});
+				}
+			});
+		
+		</script>
+</body>
+</html>

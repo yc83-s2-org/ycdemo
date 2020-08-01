@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>地址管理</title>
+<link rel="stylesheet" type="text/css"
+	href="easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+<script type="text/javascript" src="easyui/jquery.min.js"></script>
+<script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<style type="text/css">
+input{
+	width: 200px
+}
+
+</style>
+<script type="text/javascript">
+	
+	//图片字段的格式化方法
+	function fmtImg(value, row, index) {
+		//  <img height='100px' src='../products/1/cs10001.jpg'>   
+		return "<img height='100px' src='../"+value+"'>";
+	}
+	
+	// 出版时间字段的格式化方法
+	function fmtDate(date){
+		var y = date.getFullYear();
+		var m = date.getMonth()+1;
+		var d = date.getDate();
+		return y + "-" + m + '-' + d;
+	}
+		
+	
+	// 操作字段的格式化方法
+	function fmtOp(value, row, index) {
+		return "<button onclick='edit("+index+")'>修改</button>";
+	}
+	
+	// 打开修改窗口
+	function edit(index) {
+		$("#dd").dialog('open');
+		// index 有值 就是修改表格中的某一行记录, 否则是新增
+		// edit() 不传参数 index 为 undefined
+		if(index != undefined){
+			var rows = $('#dg').datagrid("getRows");
+			rows[index].uid = rows[index].uid;
+			rows[index].name = rows[index].name;
+			rows[index].addr = rows[index].addr;
+			rows[index].phone = rows[index].phone;	
+			rows[index].dft = rows[index].dft;
+			$('#ff').form('load',rows[index]);
+		} else {
+			$('#ff').form('clear');
+		}
+	}
+	
+	function save() {
+		// easyui 的表单的ajax提交方式
+		$('#ff').form('submit',{
+			url : "../address.do",
+			onSubmit: function(param){
+				//  扩展请求参数
+				param.op = "save";
+			},
+			success : res=>{
+				// 原有的 res ==> 消息, 现在的 res ==> json对象  {  code , msg, data }
+				res = JSON.parse(res);
+				alert(res.msg);
+				if(res.code == 1 ){
+					// 关闭窗口
+					$("#dd").dialog('close');
+					// 刷新表格
+					$('#dg').datagrid("reload");
+				}
+				// 否则什么都不做 
+			}
+		});
+	}
+	
+	
+	
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'north'" style="height: 50px;">
+			
+			<div style="height: 50px; margin: 10px">					
+			<a id="btn" href="#" class="easyui-linkbutton"
+				data-options="iconCls:'icon-add'"
+				onclick="edit()">新增地址</a>
+			</div>
+		</div>
+		<div data-options="region:'center',title:'地址信息', iconCls:'icon-ok'">
+			<table class="easyui-datagrid" id="dg"
+				data-options="
+				url:'../address.do?op=query',
+				method:'get',
+				border:false,
+				singleSelect:true,
+				fit:true,
+				fitColumns:true,
+				">
+				<thead>
+					<tr>
+						<th data-options="field:'id', width:20">编号</th>
+						<th data-options="field:'uid', width:20">用户ID</th>
+						<th data-options="field:'name', width:100">姓名</th>
+						<th data-options="field:'addr', width:50">收货地址</th>
+						<th data-options="field:'phone', width:100">联系电话</th>
+						<th data-options="field:'dft', width:20">默认地址</th>				
+						<th data-options="field:'createtime', width:100">上架日期</th>
+						<th data-options="field:'idd', width:100, formatter:fmtOp,align:'center'">操作</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	
+	<!-- 修改地址编辑窗口 -->
+	<div id="dd" class="easyui-dialog" title="地址" style="width:500px;height:500px;"
+	    data-options="
+	    iconCls:'icon-save',
+	    resizable:true,
+	    modal:true,
+	    closed:true,
+	    buttons:'#bb'">
+	    <form id="ff">
+	    <input class="easyui-textbox" name="id" label="编号"><br>
+	    <input class="easyui-textbox" name="uid" label="用户ID"><br>
+		<input class="easyui-textbox" name="name" label="姓名"><br>		
+		<input class="easyui-textbox" name="addr" label="收货地址"><br>
+		<input class="easyui-numberbox" name="phone" label="联系电话"><br>
+		<input class="easyui-textbox" name="dft" label="默认地址"><br>
+		</form>
+	</div>
+	<div id="bb">
+		<a href="#" class="easyui-linkbutton" onclick="save()">保存</a>
+		<a href="#" class="easyui-linkbutton">放弃</a>
+	</div>
+	
+	
+	
+</body>
+</html>
